@@ -42,11 +42,41 @@
 				this.centre = centreVertex;
 			}
 			
+			// Model to world vertex coordinates transformation
+			function calculateWorldCoords([x,y,z]){			
+				var x_s = (x)/(z*aspectRatio*FOV);
+				var y_s = (y)/(z*FOV);
+				var projectedCoordsPersp = [(((x_s+1)/2)*screenSize[0]),(((1-y_s)/2)*screenSize[1])];
+				console.log([x,y,z]);
+				return projectedCoordsPersp;
+			}
+			
+			// Calculate camera coordinates of one point		
+			function calculateCameraCoords([x,y,z]){			
+				var x_s = (x)/(z*aspectRatio*FOV);
+				var y_s = (y)/(z*FOV);
+				var projectedCoordsPersp = [(((x_s+1)/2)*screenSize[0]),(((1-y_s)/2)*screenSize[1])];
+				console.log([x,y,z]);
+				return projectedCoordsPersp;
+			}
+			
+			// Calculate all coordinates of an object
+			function calculateAllCoords(coordsPersp2){
+				var i = 0;
+				var finalCoords=[];
+				for(let coord of coordsPersp2){
+					finalCoords[i] = this.calculateCameraCoords(coord);
+					i++;
+				}
+				
+				return finalCoords;
+			}
+		
 		}
 		var object1 = new object3D([[30,20,100],[30,5,100],[30,5,85],[30,20,85],[15,20,100],[15,5,100],[15,20,85],[30,20,85],[15,5,85]],[30,20,100]);
 		
 		// Coordinate of a vertex in model view
-		var coordsPersp = [[30,20,100],[30,5,100],[30,5,85],[30,20,85],[15,20,100],[15,5,100],[15,20,85],[30,20,85],[15,5,85]];
+		var coordsPersp = object1.points;
 		
 
 		function multiplyMatrixByConstant(matrix, constant) {
@@ -121,25 +151,7 @@
 		
 		
 		
-		
-		function calculateCoords([x,y,z]){			
-			var x_s = (x)/(z*aspectRatio*FOV);
-			var y_s = (y)/(z*FOV);
-			var projectedCoordsPersp = [(((x_s+1)/2)*screenSize[0]),(((1-y_s)/2)*screenSize[1])];
-			console.log([x,y,z]);
-			return projectedCoordsPersp;
-		}
-		
-		function calculateAllCoords(coordsPersp2){
-			var i = 0;
-			var finalCoords=[];
-			for(let coord of coordsPersp2){
-				finalCoords[i] = calculateCoords(coord);
-				i++;
-			}
-			
-			return finalCoords;
-		}
+
 		
 		function drawPoints(coordsPersp2){
 			var finalCoords = calculateAllCoords(coordsPersp2);
