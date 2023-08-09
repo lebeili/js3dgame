@@ -51,7 +51,16 @@
 		  
 		  return [ x, newY, newZ ];
 		}
-				
+		function rotateZ(theta, point) {
+		  const [ x, y, z ] = point;
+		  const cosTheta = Math.cos(theta);
+		  const sinTheta = Math.sin(theta);
+		  
+		  const newX = x * cosTheta - y * sinTheta;
+		  const newY = x * sinTheta + y * cosTheta;
+		  
+		  return [ newX, newY, z ];
+		}		
 		// Blueprint for a 3D model object
 		class object3D{
 			constructor(vertexPoints){
@@ -73,12 +82,12 @@
 
 				// Rotational transformation
 				worldCoordsLocal.forEach((coord)=>{
-					coord[0] = rotateX(x_r, coord)[0];
-					coord[1] = rotateX(x_r, coord)[1];
-					coord[2] = rotateX(x_r, coord)[2];
+					coord[0] = rotateZ(x_r, coord)[0];
+					coord[1] = rotateZ(x_r, coord)[1];
+					coord[2] = rotateZ(x_r, coord)[2];
 					
 				});
-				console.log(worldCoordsLocal);
+				//console.log(worldCoordsLocal);
 				// Scale transformation
 				worldCoordsLocal.forEach((coord)=>{
 					coord[0] *= x_s;
@@ -138,8 +147,8 @@
 			var object1 = new object3D([[0,0,0],[0,0,10],[0,10,10]]);	
 
 		
-		function drawPoints(objectV,camPos,camRot,x_rot){
-			var finalCoordsWorld = objectV.calculateWorldCoords([1,1,1],[x_rot,0,0],[1,1,1]);
+		function drawPoints(objectV,camPos,camRot,x_rot,objPos){
+			var finalCoordsWorld = objectV.calculateWorldCoords(objPos,[x_rot,0,0],[1,1,1]);
 			var finalCoordsCamera = objectV.calculateCameraCoords(camPos,camRot,finalCoordsWorld);
 			var finalCoordsProj = objectV.calculateProjectedCoords(finalCoordsCamera);
 			// Draw the points
@@ -168,16 +177,17 @@
 			}
 			*/
 		}
-		function drawFrame(camPos,camRot,x_rot){
+		function drawFrame(camPos,camRot,x_rot,objPos){
 			ctxPersp.clearRect(0, 0, canvasPersp.width, canvasPersp.height);
 //			coordsPersp = rotate3DPointsAroundCenter(coordsPersp, 0.1,0.1,0.1);
 			
-			drawPoints(object1,camPos,camRot,x_rot);
+			drawPoints(object1,camPos,camRot,x_rot,objPos);
 			//console.log(camPos);
 		}
 		var cameraPos = [60,64,0];
 		var cameraRot = [73,0,70];
 		var obj_x_rot = 0;
+		var objPos = [1,1,1];
 		setInterval(()=>{
 		/*cameraPos[0] -= 0.1;
 		cameraPos[1] -= 0.1;
@@ -186,8 +196,8 @@
 		/*cameraRot[0] += 0.1;
 		cameraRot[1] += 0.1;
 		cameraRot[2] += 0.1;*/
-		drawFrame(cameraPos,cameraRot,obj_x_rot);}, 20);
-		drawFrame(cameraPos,cameraRot,obj_x_rot);
+		drawFrame(cameraPos,cameraRot,obj_x_rot,objPos);}, 20);
+		//drawFrame(cameraPos,cameraRot,obj_x_rot,objPos);
 document.addEventListener("keydown", function(event) {
   if (event.key === "ArrowUp") {
 		cameraPos[1] += 1;
@@ -199,9 +209,10 @@ cameraPos[0] += 1;
   } else if (event.key === "ArrowRight") {
 cameraPos[0] -= 1;
   }else if (event.key === "w") {
-cameraRot[1] -= 0.1;
+  	objPos[2] += 1;
+  	console.log(objPos);
   } else if (event.key === "s") {
-cameraRot[1] += 0.1;
+objPos[2] -= 1;
   } else if (event.key === "a") {
 cameraRot[0] -= 0.1;
   }else if (event.key === "d") {
