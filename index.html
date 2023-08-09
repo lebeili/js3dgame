@@ -42,13 +42,20 @@
 				this.centre = centreVertex;
 			}
 			
-			// Model to world vertex coordinates transformation
-			function calculateWorldCoords([x,y,z]){			
-				var x_s = (x)/(z*aspectRatio*FOV);
-				var y_s = (y)/(z*FOV);
-				var projectedCoordsPersp = [(((x_s+1)/2)*screenSize[0]),(((1-y_s)/2)*screenSize[1])];
-				console.log([x,y,z]);
-				return projectedCoordsPersp;
+			// Model to world vertex coordinates transformation. Inputs are the objects position, rotation and scale coordinates
+			function calculateWorldCoords([x_p,y_p,z_p],[x_r,y_r,z_r],[x_s,y_s,z_s]){			
+				
+				var worldCoords = this.points;
+				
+				// Positional transformation
+				worldCoords.forEach((coord)=>{
+					coord[0] += x_p;
+					coord[1] += y_p;
+					coord[2] += z_p;
+				});
+				
+
+				return worldCoords;
 			}
 			
 			// Calculate camera coordinates of one point		
@@ -73,84 +80,11 @@
 			}
 		
 		}
-		var object1 = new object3D([[30,20,100],[30,5,100],[30,5,85],[30,20,85],[15,20,100],[15,5,100],[15,20,85],[30,20,85],[15,5,85]],[30,20,100]);
+		var object1 = new object3D([[30,20,100],[30,5,100],[30,5,85],[30,20,85],[15,20,100],[15,5,100],[15,20,85],[30,20,85],[15,5,85]],[30,20,100],[0,0,0]);
 		
 		// Coordinate of a vertex in model view
 		var coordsPersp = object1.points;
-		
-
-		function multiplyMatrixByConstant(matrix, constant) {
-			const result = [];
-
-			for (let i = 0; i < matrix.length; i++) {
-				const row = [];
-				for (let j = 0; j < matrix[i].length; j++) {
-					row.push(matrix[i][j] * constant);
-				}
-				result.push(row);
-			}
-
-			return result;
-		}
-		function rotate3DPoints(points, angleX, angleY, angleZ) {
-			const result = [];
-
-			const cosX = Math.cos(angleX);
-			const sinX = Math.sin(angleX);
-			const cosY = Math.cos(angleY);
-			const sinY = Math.sin(angleY);
-			const cosZ = Math.cos(angleZ);
-			const sinZ = Math.sin(angleZ);
-
-			for (let i = 0; i < points.length; i++) {
-				const x = points[i][0];
-				const y = points[i][1];
-				const z = points[i][2];
-
-				const rotatedX = x * cosY * cosZ - y * cosY * sinZ + z * sinY;
-				const rotatedY = x * (sinX * sinY * cosZ + cosX * sinZ) + y * (sinX * sinY * sinZ - cosX * cosZ) - z * sinX * cosY;
-				const rotatedZ = x * (cosX * sinY * cosZ - sinX * sinZ) + y * (cosX * sinY * sinZ + sinX * cosZ) + z * cosX * cosY;
-
-				result.push([rotatedX, rotatedY, rotatedZ]);
-			}
-
-			return result;
-		}
-		function findCenter(points) {
-			const center = [0, 0, 0];
-			for (let i = 0; i < points.length; i++) {
-				for (let j = 0; j < 3; j++) {
-					center[j] += points[i][j];
-				}
-			}
-			for (let j = 0; j < 3; j++) {
-				center[j] /= points.length;
-			}
-			return center;
-		}
-
-		function rotate3DPointsAroundCenter(points, angleX, angleY, angleZ) {
-			const center = findCenter(points);
-
-			const translatedPoints = points.map(point => [
-				point[0] - center[0],
-				point[1] - center[1],
-				point[2] - center[2]
-			]);
-
-			const rotatedPoints = rotate3DPoints(translatedPoints, angleX, angleY, angleZ);
-
-			const finalPoints = rotatedPoints.map(point => [
-				point[0] + center[0],
-				point[1] + center[1],
-				point[2] + center[2]
-			]);
-
-			return finalPoints;
-		}
-		
-		
-		
+				
 
 		
 		function drawPoints(coordsPersp2){
