@@ -4,8 +4,7 @@
     <title>Canvas Point</title>
 </head>
 <body>
-	<h2>Orhographic projection:</h2>
-    <canvas id="myCanvas" width="600" height="300" style="border: 1px solid #ccc;"></canvas>
+
     <script>
 		// Coordinate of a vertex in camera view in metres
 		var coords = [30,20,1];
@@ -18,12 +17,7 @@
             ctx.fillRect(x, y, 1, 1); // Fill a 2x2 pixel rectangle at (x, y)
         }
 
-        // Get the canvas element and its context
-        const canvas = document.getElementById('myCanvas');
-        const ctx = canvas.getContext('2d');
 
-        // Draw the point
-        drawPoint(ctx, projectedCoords[0], projectedCoords[1]);
     </script>
 	
 	<h2>Perspective projection:</h2>
@@ -41,11 +35,20 @@
 		const FOV_deg = 30;
 		const FOV = FOV_deg*(3.14/180);
 		
+		// Blueprint for a 3D model object
+		class object3D{
+			constructor(vertexPoints, centreVertex){
+				this.points = vertexPoints;
+				this.centre = centreVertex;
+			}
+			
+		}
+		var object1 = new object3D([[30,20,100],[30,5,100],[30,5,85],[30,20,85],[15,20,100],[15,5,100],[15,20,85],[30,20,85],[15,5,85]],[30,20,100]);
 		
-		// Coordinate of a vertex in camera view in metres
+		// Coordinate of a vertex in model view
 		var coordsPersp = [[30,20,100],[30,5,100],[30,5,85],[30,20,85],[15,20,100],[15,5,100],[15,20,85],[30,20,85],[15,5,85]];
 		
-		// ChatGPT generated
+
 		function multiplyMatrixByConstant(matrix, constant) {
 			const result = [];
 
@@ -115,6 +118,10 @@
 
 			return finalPoints;
 		}
+		
+		
+		
+		
 		function calculateCoords([x,y,z]){			
 			var x_s = (x)/(z*aspectRatio*FOV);
 			var y_s = (y)/(z*FOV);
@@ -164,8 +171,8 @@
 			
 			drawPoints(coordsPersp);
 		}
-		setInterval(drawFrame, 200);
-		
+		//setInterval(drawFrame, 200);
+		drawFrame();
 		
 		// Fill the polygon
 		
