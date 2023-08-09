@@ -32,7 +32,7 @@
 		// Aspect ratio
 		const aspectRatio = 600/300;
 		// Field of view
-		const FOV_deg = 30;
+		const FOV_deg = 180;
 		const FOV = FOV_deg*(3.14/180);
 		
 		// Blueprint for a 3D model object
@@ -45,7 +45,7 @@
 			calculateWorldCoords([x_p,y_p,z_p],[x_r,y_r,z_r],[x_s,y_s,z_s]){			
 				
 				let worldCoordsLocal = JSON.parse(JSON.stringify(this.points));
-				console.log(this.points);
+				//console.log(this.points);
 				// Positional transformation
 				worldCoordsLocal.forEach((coord)=>{
 					coord[0] += x_p;
@@ -67,7 +67,7 @@
 					coord[1] *= y_s;
 					coord[2] *= z_s;
 				});
-				console.log(worldCoordsLocal);
+				//console.log(worldCoordsLocal);
 				return worldCoordsLocal;
 			}
 			
@@ -80,8 +80,20 @@
 					coord[1] -= y_p;
 					coord[2] -= z_p;
 				});
+				// Rotational transformation
+				var R_inverse = [
+				  [1, 0, 0],
+				  [0, Math.cos(x_r), -Math.sin(x_r)],
+				  [0, Math.sin(x_r), Math.cos(x_r)]
+				];
+				
+				worldCoordsLocal.forEach((coord)=>{
+					for (let i = 0; i < 3; i++) {
+					  coord[i] = R_inverse[i][0] * coord[0] + R_inverse[i][1] * coord[1] + R_inverse[i][2] * coord[2];
+					}
+				});
 				let cameraCoords = worldCoordsLocal;
-				console.log(worldCoordsLocal);
+				//console.log(worldCoordsLocal);
 				return cameraCoords;
 			}
 			
@@ -104,19 +116,19 @@
 			}
 		
 		}
-		var object1 = new object3D([[0,0,30],[0,0,0],[0,30,0],[30,0,0]]);
+		var object1 = new object3D([[0,0,0],[0,0,60],[0,60,60],[0,60,0],[60,0,60],[60,0,0],[60,60,60],[60,60,0]]);
 				
 
 		
-		function drawPoints(objectV){
+		function drawPoints(objectV,camPos,camRot){
 			var finalCoordsWorld = objectV.calculateWorldCoords([1,1,1],[0,0,0],[1,1,1]);
-			var finalCoordsCamera = objectV.calculateCameraCoords([0,0,0],[0,0,0],finalCoordsWorld);
+			var finalCoordsCamera = objectV.calculateCameraCoords(camPos,camRot,finalCoordsWorld);
 			var finalCoordsProj = objectV.calculateProjectedCoords(finalCoordsCamera);
 			// Draw the points
 			for(let coord of finalCoordsProj){
 				drawPoint(ctxPersp, coord[0], coord[1]);
 			}
-			console.log(finalCoordsProj);
+			//console.log(finalCoordsProj);
 			/*
 			// Draw lines between vertices
 			var slope = (finalCoords[2][1]-finalCoords[0][1])/(finalCoords[2][0]-finalCoords[0][0]);
@@ -134,15 +146,32 @@
 			}
 			*/
 		}
-		function drawFrame(){
+		function drawFrame(camPos,camRot){
 			ctxPersp.clearRect(0, 0, canvasPersp.width, canvasPersp.height);
 //			coordsPersp = rotate3DPointsAroundCenter(coordsPersp, 0.1,0.1,0.1);
 			
-			drawPoints(object1);
+			drawPoints(object1,camPos,camRot);
+			//console.log(camPos);
 		}
-		//setInterval(drawFrame, 200);
-		drawFrame();
-		
+		var cameraPos = [0,0,0];
+		var cameraRot = [0,0,0];
+		setInterval(()=>{
+		cameraPos[0] -= 0.1;
+		cameraPos[1] -= 0.1;
+		cameraPos[2] -= 0.1;
+		/*cameraRot[0] += 0.1;
+		cameraRot[1] += 0.1;
+		cameraRot[2] += 0.1;*/
+		drawFrame(cameraPos,cameraRot);}, 100);
+		drawFrame(cameraPos,cameraRot);
+		document.addEventListener("click",()=>{
+		//cameraPos[0] += 0.1;
+		//cameraPos[1] += 0.1;
+		//cameraPos[2] += 0.1;
+		cameraRot[0] += 0.1;
+		cameraRot[1] += 0.1;
+		cameraRot[2] += 0.1;
+		drawFrame(cameraPos,cameraRot);});
 		// Fill the polygon
 		
 		
