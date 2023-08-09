@@ -37,63 +37,86 @@
 		
 		// Blueprint for a 3D model object
 		class object3D{
-			constructor(vertexPoints, centreVertex){
+			constructor(vertexPoints){
 				this.points = vertexPoints;
-				this.centre = centreVertex;
 			}
 			
 			// Model to world vertex coordinates transformation. Inputs are the objects position, rotation and scale coordinates
-			function calculateWorldCoords([x_p,y_p,z_p],[x_r,y_r,z_r],[x_s,y_s,z_s]){			
+			calculateWorldCoords([x_p,y_p,z_p],[x_r,y_r,z_r],[x_s,y_s,z_s]){			
 				
-				var worldCoords = this.points;
-				
+				let worldCoordsLocal = JSON.parse(JSON.stringify(this.points));
+				console.log(this.points);
 				// Positional transformation
+				worldCoordsLocal.forEach((coord)=>{
+					coord[0] += x_p;
+					coord[1] += y_p;
+					coord[2] += z_p;
+					
+				});
+
+				/*// Rotational transformation
 				worldCoords.forEach((coord)=>{
 					coord[0] += x_p;
 					coord[1] += y_p;
 					coord[2] += z_p;
+				});*/
+				
+				// Scale transformation
+				worldCoordsLocal.forEach((coord)=>{
+					coord[0] *= x_s;
+					coord[1] *= y_s;
+					coord[2] *= z_s;
 				});
-				
+				console.log(worldCoordsLocal);
+				return worldCoordsLocal;
+			}
+			
+			// Viewing transformation. Inputs are the cameras positional and rotational world coordinates as well as the world coordinates of the object.
+			calculateCameraCoords([x_p,y_p,z_p],[x_r,y_r,z_r],worldCoords){
+				let worldCoordsLocal = JSON.parse(JSON.stringify(worldCoords));
+				// Positional transformation
+				worldCoordsLocal.forEach((coord)=>{
+					coord[0] -= x_p;
+					coord[1] -= y_p;
+					coord[2] -= z_p;
+				});
+				let cameraCoords = worldCoordsLocal;
+				console.log(worldCoordsLocal);
+				return cameraCoords;
+			}
+			
+			// Projection transformation. The input is the coordinates after viewing transformation.
+			calculateProjectedCoords(cameraCoords){
+				var projectedCoords = [];
+				var cameraCoordsLocal = JSON.parse(JSON.stringify(cameraCoords));
+				var x_tmp;
+				var y_tmp;
+				var projectedCoordsPersp_tmp;
+				cameraCoordsLocal.forEach((coord)=>{
+					x_tmp = (coord[0])/(coord[1]*aspectRatio*FOV);
+					y_tmp = (coord[1])/(coord[2]*FOV);
+					projectedCoordsPersp_tmp = [(((x_tmp+1)/2)*screenSize[0]),(((1-y_tmp)/2)*screenSize[1])];
+					projectedCoords.push(projectedCoordsPersp_tmp);
+				});			
 
-				return worldCoords;
-			}
-			
-			// Calculate camera coordinates of one point		
-			function calculateCameraCoords([x,y,z]){			
-				var x_s = (x)/(z*aspectRatio*FOV);
-				var y_s = (y)/(z*FOV);
-				var projectedCoordsPersp = [(((x_s+1)/2)*screenSize[0]),(((1-y_s)/2)*screenSize[1])];
-				console.log([x,y,z]);
-				return projectedCoordsPersp;
-			}
-			
-			// Calculate all coordinates of an object
-			function calculateAllCoords(coordsPersp2){
-				var i = 0;
-				var finalCoords=[];
-				for(let coord of coordsPersp2){
-					finalCoords[i] = this.calculateCameraCoords(coord);
-					i++;
-				}
-				
-				return finalCoords;
+				//console.log([x,y,z]);
+				return projectedCoords;
 			}
 		
 		}
-		var object1 = new object3D([[30,20,100],[30,5,100],[30,5,85],[30,20,85],[15,20,100],[15,5,100],[15,20,85],[30,20,85],[15,5,85]],[30,20,100],[0,0,0]);
-		
-		// Coordinate of a vertex in model view
-		var coordsPersp = object1.points;
+		var object1 = new object3D([[0,0,30],[0,0,0],[0,30,0],[30,0,0]]);
 				
 
 		
-		function drawPoints(coordsPersp2){
-			var finalCoords = calculateAllCoords(coordsPersp2);
-			
+		function drawPoints(objectV){
+			var finalCoordsWorld = objectV.calculateWorldCoords([1,1,1],[0,0,0],[1,1,1]);
+			var finalCoordsCamera = objectV.calculateCameraCoords([0,0,0],[0,0,0],finalCoordsWorld);
+			var finalCoordsProj = objectV.calculateProjectedCoords(finalCoordsCamera);
 			// Draw the points
-			for(let coord of finalCoords){
+			for(let coord of finalCoordsProj){
 				drawPoint(ctxPersp, coord[0], coord[1]);
 			}
+			console.log(finalCoordsProj);
 			/*
 			// Draw lines between vertices
 			var slope = (finalCoords[2][1]-finalCoords[0][1])/(finalCoords[2][0]-finalCoords[0][0]);
@@ -113,9 +136,9 @@
 		}
 		function drawFrame(){
 			ctxPersp.clearRect(0, 0, canvasPersp.width, canvasPersp.height);
-			coordsPersp = rotate3DPointsAroundCenter(coordsPersp, 0.1,0.1,0.1);
+//			coordsPersp = rotate3DPointsAroundCenter(coordsPersp, 0.1,0.1,0.1);
 			
-			drawPoints(coordsPersp);
+			drawPoints(object1);
 		}
 		//setInterval(drawFrame, 200);
 		drawFrame();
