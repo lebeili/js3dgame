@@ -4,8 +4,21 @@
     <title>Canvas Point</title>
 </head>
 <body>
+	<canvas id="texture" width="50" height="50"></canvas>
+	<script>
+		var canv = document.getElementById("texture");
+		var ctx2 = canv.getContext("2d");
+		var img = new Image();
+		img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAxHpUWHRSYXcgcHJvZmlsZSB0eXBlIGV4aWYAAHjabVBbDsMgDPvPKXYEglMIx6GPSbvBjr8AKWqrWcINceSa0PH9vOnVEFlIlqyppBQMUqTEaoWGgdqZg3TuQHSN732aQrQW2uS4avL5s8/TYHyqVcvFSDcX1rtQxP31YeQ/QkvUQuxuVLYZuQvsBnU8K6Si+fqE9Qh36DjUCLl7T5PnXbJtb1+siRgPMIIxICMA2gGhWqHGTbbANlCBzoziSWwh//Z0gn7l51kbwsNKuwAAAYVpQ0NQSUNDIHByb2ZpbGUAAHicfZE9SMNAGIbfpkpLqTjYQcQhQxUHu6iIY6liESyUtkKrDiaX/kGThiTFxVFwLTj4s1h1cHHW1cFVEAR/QFxdnBRdpMTvkkKLGO847uG97/24ew8QWjWmmn1xQNUsI5NMiPnCqhh4RRAhmiImJGbqqexiDp7j6x4+vt/FeC/vuj/HgFI0GeATieNMNyziDeLZTUvnvE8cYRVJIT4nnjTogsSPXJddfuNcdljgPSNGLjNPHCEWyz0s9zCrGCrxDHFUUTXqL+RdVjhvcVZrDda5J39huKitZLlOaxRJLCGFNGUko4EqarAQo10jxUSGzhMe/hHHnyaXTK4qGDkWUIcKyfGD/8HvbM3S9JTbKZwA+l9s+2MMCOwC7aZtfx/bdvsE8D8DV1rXX28Bc5+kN7ta9AgY3AYurruavAdc7gDDT7pkSI7kpyWUSsD7GX1TARi6BUJrbm6dc5w+ADnKavkGODgExsvUe93j3cHe3P6t6eT3A7TtcsEIFWpYAAANdmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNC40LjAtRXhpdjIiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iCiAgICB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIgogICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICAgeG1sbnM6R0lNUD0iaHR0cDovL3d3dy5naW1wLm9yZy94bXAvIgogICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iCiAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgIHhtcE1NOkRvY3VtZW50SUQ9ImdpbXA6ZG9jaWQ6Z2ltcDo5ZmY0N2NhNi0wNTBkLTQ0NTItYjkxZi0yZWY3MjBkM2Y4NzgiCiAgIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YThiZDI2OTctMTYxNi00YzQ3LWFjYzQtN2Y3NGIxNTgxNGNlIgogICB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6NjQ2MGRjM2MtMjJhZS00ZDZhLTkyOTUtMTE1OTZkMjAxMTM0IgogICBkYzpGb3JtYXQ9ImltYWdlL3BuZyIKICAgR0lNUDpBUEk9IjIuMCIKICAgR0lNUDpQbGF0Zm9ybT0iV2luZG93cyIKICAgR0lNUDpUaW1lU3RhbXA9IjE2OTE2NjM2MDIxNDkxNDAiCiAgIEdJTVA6VmVyc2lvbj0iMi4xMC4zNCIKICAgdGlmZjpPcmllbnRhdGlvbj0iMSIKICAgeG1wOkNyZWF0b3JUb29sPSJHSU1QIDIuMTAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjM6MDg6MTBUMTM6MzM6MTkrMDM6MDAiCiAgIHhtcDpNb2RpZnlEYXRlPSIyMDIzOjA4OjEwVDEzOjMzOjE5KzAzOjAwIj4KICAgPHhtcE1NOkhpc3Rvcnk+CiAgICA8cmRmOlNlcT4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiCiAgICAgIHN0RXZ0OmNoYW5nZWQ9Ii8iCiAgICAgIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6NTA5YTA5NzQtYTMyMC00ZmE5LWI3ODgtMzBkY2Q3OWJhNDhmIgogICAgICBzdEV2dDpzb2Z0d2FyZUFnZW50PSJHaW1wIDIuMTAgKFdpbmRvd3MpIgogICAgICBzdEV2dDp3aGVuPSIyMDIzLTA4LTEwVDEzOjMzOjIyIi8+CiAgICA8L3JkZjpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZXNjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAKPD94cGFja2V0IGVuZD0idyI/PkbAvAMAAAAGYktHRAD/AP8A/6C9p5MAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfnCAoKIRbthA9bAAAJM0lEQVRo3u1ayZLcxhF9tQCNXqZnehaKi+QIhyxHyDcfffHFN3+PP82fIoq2bDEUEkWa4sywVzSAWtKHSmRVSz+g6NCcCmigUJX58uXLrFH/+OffCfyntAIUXwQC+JdhGOCdB8C3iH+IgAqKhxEd9QAArTWaWTNOi+ViKWPEPOy6I2JMN3zwCDyGgqwjhCDfjjHi2B4BANZaXK2uZC6NM/k7m41YrZRcuNaBYoLN1WIJa0xyu3bwFbt3IMQhQaB76LB5tUlouFCwX04w4q/f9zLvxm9k/Pz6E9TWpsfqucB3P7Q4+vROd+wFQtpo1HWdnieC5XcVFGjIOLXlrigSKKQfDRSMSg4jpQGdNhVVRBhjygHx3vPEBpaBTUSCfQDw3svYKA3Dc6ni28YY6KjlPoW0Q9IExcZWhdEVAbKQs4JWs63l4vDVHm7v0g7/cgs7Tw7b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";
+		var imageData;
+		var data;
+		img.onload = function () {
+			ctx2.drawImage(img, 0, 0);
+			imageData = ctx2.getImageData(0, 0, canv.width, canv.height);
+			data = imageData.data;
+			console.log(data);
+		};
 
-    <script>
 		// Coordinate of a vertex in camera view in metres
 		var coords = [30,20,1];
 		// Frustum size in metres(x,y)
@@ -13,17 +26,33 @@
 		var projectedCoords = [((coords[0]/frustumSize[0])*600),((coords[1]/frustumSize[1])*300)]
         // Function to draw a 2x2 pixel black point on the canvas
         function drawPoint(ctx, x, y,x_next, y_next) {
-            ctx.fillStyle = "black"; // Set the color to black
+            //ctx.fillStyle = "black"; // Set the color to black
             ctx.fillRect(x, y, 1, 1); // Fill a 2x2 pixel rectangle at (x, y)
 			ctx.beginPath();
 			ctx.moveTo(x, y);
 			ctx.lineTo(x_next, y_next);
 			ctx.stroke();
+			
+        }
+        function drawTexturePoint(ctx, x, y,uvCoord) {
+
+			  // Coordinates of the pixel you want to address
+			  var x_text = uvCoord[0]; // Replace with the desired X coordinate
+			  var y_text = uvCoord[1];  // Replace with the desired Y coordinate
+
+			  // Calculate the index in the data array for the specified coordinates
+			  var index = (y_text * 50 + x_text) * 4;
+
+			  // Extract RGB values at the specified coordinates
+			  var red = data[index];       // Red channel value (0-255)
+			  var green = data[index + 1];  // Green channel value (0-255)
+			  var blue = data[index + 2];   // Blue channel value (0-255)
+			  ctx.fillStyle = "rgb("+red+","+green+","+blue+")"; // Set the color to black
+			  ctx.fillRect(x, y, 1, 1); // Fill a 2x2 pixel rectangle at (x, y)
         }
 
-
     </script>
-	
+
 	<h2>Perspective projection:</h2>
     <canvas id="myCanvasPersp" width="600" height="300" style="border: 1px solid #ccc;"></canvas>
     <script>
@@ -63,15 +92,15 @@
 		}		
 		// Blueprint for a 3D model object
 		class object3D{
-			constructor(vertexPoints){
+			constructor(vertexPoints, uvCoords){
 				this.points = vertexPoints;
+				this.uvCoords = uvCoords;
 			}
 			
 			// Model to world vertex coordinates transformation. Inputs are the objects position, rotation and scale coordinates
 			calculateWorldCoords([x_p,y_p,z_p],[x_r,y_r,z_r],[x_s,y_s,z_s]){			
 				
 				let worldCoordsLocal = JSON.parse(JSON.stringify(this.points));
-				//console.log(this.points);
 				// Positional transformation
 				worldCoordsLocal.forEach((coord)=>{
 					coord[0] += x_p;
@@ -87,14 +116,13 @@
 					coord[2] = rotateZ(x_r, coord)[2];
 					
 				});
-				//console.log(worldCoordsLocal);
 				// Scale transformation
 				worldCoordsLocal.forEach((coord)=>{
 					coord[0] *= x_s;
 					coord[1] *= y_s;
 					coord[2] *= z_s;
 				});
-				//console.log(worldCoordsLocal);
+
 				return worldCoordsLocal;
 			}
 			
@@ -120,7 +148,6 @@
 					}
 				});
 				let cameraCoords = worldCoordsLocal;
-				//console.log(worldCoordsLocal);
 				return cameraCoords;
 			}
 			
@@ -138,27 +165,70 @@
 					projectedCoords.push(projectedCoordsPersp_tmp);
 				});			
 
-				//console.log([x,y,z]);
 				return projectedCoords;
 			}
 		
 		}
 		//var object1 = new object3D([[0,0,0],[0,0,10],[0,10,10],[0,10,0],[10,10,0],[10,10,10],[10,0,10],[10,0,0]]);
-			var object1 = new object3D([[0,0,0],[0,0,10],[0,10,10]]);	
+			var object1 = new object3D([[0,0,0],[0,0,10],[0,10,10]],[[1,2],[43,35],[1,38]]);	
 
 		
 		function drawPoints(objectV,camPos,camRot,x_rot,objPos){
 			var finalCoordsWorld = objectV.calculateWorldCoords(objPos,[x_rot,0,0],[1,1,1]);
 			var finalCoordsCamera = objectV.calculateCameraCoords(camPos,camRot,finalCoordsWorld);
 			var finalCoordsProj = objectV.calculateProjectedCoords(finalCoordsCamera);
+			
+			
+			// RASTERIZATION:
+			
+			// Left top most and right bottom most point coordinates:
+			var leftTopMPointCoord = [finalCoordsProj.sort((a, b) => a[0] - b[0])[0][0],finalCoordsProj.sort((a, b) => a[1] - b[1])[0][1]];
+			var rightBotMPointCoord = [finalCoordsProj.sort((a, b) => b[0] - a[0])[0][0],finalCoordsProj.sort((a, b) => b[1] - a[1])[0][1]];
+			var polygonCoords = [];
+			var x_tmp = leftTopMPointCoord[0];
+			var y_tmp = leftTopMPointCoord[1];
+			var m = [];
+			var b = [];
+			for(let i = 0;i <= 1;i++){
+				var y1 = finalCoordsProj[i][1];
+				var y2 = finalCoordsProj[i+1][1];
+				var x1 = finalCoordsProj[i][0];
+				var x2 = finalCoordsProj[i+1][0];
+				m.push((y2-y1)/(x2-x1));
+				b.push(y1-(m[i]*x1));
+
+			}
+				var y1 = finalCoordsProj[0][1];
+				var y2 = finalCoordsProj[2][1];
+				var x1 = finalCoordsProj[0][0];
+				var x2 = finalCoordsProj[2][0];
+				m.push((y2-y1)/(x2-x1));
+				b.push(y1-(m[2]*x1));
+			while(y_tmp < rightBotMPointCoord[1]){
+				while(x_tmp < rightBotMPointCoord[0]){
+					x_tmp++;
+					if((y_tmp < ((m[0]*x_tmp)+b[0])) && (y_tmp > ((m[1]*x_tmp)+b[1])) && (y_tmp > ((m[2]*x_tmp)+b[2]))){
+						polygonCoords.push([x_tmp,y_tmp]);
+					}	
+				}
+				x_tmp = leftTopMPointCoord[0];
+				y_tmp++;
+			}
+
 			// Draw the points
 			for(let i = 0; i<finalCoordsProj.length;i++){
 				if(i+1 != finalCoordsProj.length){
 					drawPoint(ctxPersp, finalCoordsProj[i][0], finalCoordsProj[i][1], finalCoordsProj[i+1][0], finalCoordsProj[i+1][1]);
+					
 				}else{
 					drawPoint(ctxPersp, finalCoordsProj[i][0], finalCoordsProj[i][1], finalCoordsProj[0][0], finalCoordsProj[0][1]);
 				}
+				drawTexturePoint(ctxPersp, finalCoordsProj[i][0], finalCoordsProj[i][1],objectV.uvCoords[i]);
 			}
+			polygonCoords.forEach(([x,y])=>{
+				
+				drawTexturePoint(ctxPersp, x, y,[10,10]);
+			});
 			//console.log(finalCoordsProj);
 			/*
 			// Draw lines between vertices
@@ -186,39 +256,39 @@
 		}
 		var cameraPos = [60,64,0];
 		var cameraRot = [73,0,70];
-		var obj_x_rot = 0;
+		var obj_x_rot = 30;
 		var objPos = [1,1,1];
 		setInterval(()=>{
 		/*cameraPos[0] -= 0.1;
 		cameraPos[1] -= 0.1;
 		cameraPos[2] -= 0.1;*/
-		obj_x_rot+= 0.03;
+		//obj_x_rot+= 0.03;
 		/*cameraRot[0] += 0.1;
 		cameraRot[1] += 0.1;
 		cameraRot[2] += 0.1;*/
 		drawFrame(cameraPos,cameraRot,obj_x_rot,objPos);}, 20);
 		//drawFrame(cameraPos,cameraRot,obj_x_rot,objPos);
-document.addEventListener("keydown", function(event) {
-  if (event.key === "ArrowUp") {
-		cameraPos[1] += 1;
+		document.addEventListener("keydown", function(event) {
+		  if (event.key === "ArrowUp") {
+				cameraPos[1] += 1;
 
-  } else if (event.key === "ArrowDown") {
-cameraPos[1] -= 1;
-  } else if (event.key === "ArrowLeft") {
-cameraPos[0] += 1;
-  } else if (event.key === "ArrowRight") {
-cameraPos[0] -= 1;
-  }else if (event.key === "w") {
-  	objPos[2] += 1;
-  	console.log(objPos);
-  } else if (event.key === "s") {
-objPos[2] -= 1;
-  } else if (event.key === "a") {
-cameraRot[0] -= 0.1;
-  }else if (event.key === "d") {
-cameraRot[0] -= 0.1;
-  }
-});
+		  } else if (event.key === "ArrowDown") {
+		cameraPos[1] -= 1;
+		  } else if (event.key === "ArrowLeft") {
+		cameraPos[0] += 1;
+		  } else if (event.key === "ArrowRight") {
+		cameraPos[0] -= 1;
+		  }else if (event.key === "w") {
+			objPos[2] += 1;
+			console.log(objPos);
+		  } else if (event.key === "s") {
+		objPos[2] -= 1;
+		  } else if (event.key === "a") {
+		cameraRot[0] -= 0.1;
+		  }else if (event.key === "d") {
+		cameraRot[0] -= 0.1;
+		  }
+		});
 		// Fill the polygon
 		
 		
