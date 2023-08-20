@@ -66,7 +66,7 @@
 		// Aspect ratio
 		const aspectRatio = 600/300;
 		// Field of view
-		const FOV_deg = 180;
+		const FOV_deg = 90;
 		const FOV = FOV_deg*(3.14/180);
 		
 		
@@ -225,9 +225,11 @@
 				}
 				drawTexturePoint(ctxPersp, finalCoordsProj[i][0], finalCoordsProj[i][1],objectV.uvCoords[i]);
 			}
+			let g = 0;
 			polygonCoords.forEach(([x,y])=>{
 				
-				drawTexturePoint(ctxPersp, x, y,[10,10]);
+				drawTexturePoint(ctxPersp, x, y,[(g%50),(g%50)]);
+				g++;
 			});
 			//console.log(finalCoordsProj);
 			/*
